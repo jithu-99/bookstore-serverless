@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Book Store API
+Globals:
+  Api:
+    EndpointConfiguration: REGIONAL
+Outputs:
+  BookStoreApi:
+    Description: URL for application
+    Export:
+      Name: BookStoreApi
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/books
+Resources:
+  BookStoreFunction:
+    Properties:
+      CodeUri: s3://bookstore-serverless/a1fdd00db490302385ad3015f79209d8
+      Events:
+        GetResource:
+          Properties:
+            Method: any
+            Path: /{proxy+}
+          Type: Api
+      Handler: com.bookstore.StreamLambdaHandler::handleRequest
+      MemorySize: 1512
+      Policies: AWSLambdaBasicExecutionRole
+      Runtime: java8
+      Timeout: 60
+    Type: AWS::Serverless::Function
+Transform: AWS::Serverless-2016-10-31
